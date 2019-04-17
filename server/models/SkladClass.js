@@ -47,9 +47,7 @@ class Sklad {
         return stock;
     }
 
-    static async checkProductsInStore(productsArticle,storeName,props){
-
-        
+    static async checkProductsInStore(productsArticle,storeName){        
         const products = await this.getProduct({
             filter:{
                 article:productsArticle
@@ -68,9 +66,8 @@ class Sklad {
             "store.id":store.rows[0].id,
             "product.id":products.rows.map(row => (row.id))
         })
-
+        if(stock.rows.length <= 0) throw new Error(`E:SkladClass.checkProductsInStore -  нет данных товаров "${productsArticle}" на складе "${storeName}" ` )
         return stock;
-
     }
 
     static async toCorrectStock(stock = [], store = String.prototype){
@@ -91,6 +88,31 @@ class Sklad {
         }
         return await new Products(correctStock)
     }
+
+    static async getOrganizations(props = {}){
+        
+        const organizations = await ms_client.GET('/entity/organization',{
+            limit:props.limit,
+            filter:props.filter || ""
+        })
+        return organizations.rows
+    }
+
+    static async getOrganizationById(id = String.prototype){
+        const organization = await ms_client.GET('/entity/organization/'+id)
+        return organization
+    }
+
+
+    static async createCustomOrder(name, organization, agent  ){        
+        let customOrder = await ms_client.POST('/entity/customerorder', {
+            name,
+            organization,
+            agent
+        })
+        return customOrder
+    }
+
 }
 
 module.exports = Sklad
