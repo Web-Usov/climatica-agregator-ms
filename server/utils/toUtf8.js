@@ -1,0 +1,1 @@
+module.exports = (str) => (`=?utf-8?B?${Buffer.from(str).toString('base64')}?=`)

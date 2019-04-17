@@ -1,0 +1,6 @@
+exports.Item = require('./ItemClass')
+exports.File = require('./FileClass')
+exports.Products = require('./ProductsClass')
+exports.Message = require('./MessagesClass')
+exports.SendResponse = require('./ResponseClass')
+exports.MS = require('./SkladClass')
