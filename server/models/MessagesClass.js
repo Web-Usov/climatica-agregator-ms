@@ -100,7 +100,10 @@ class Message {
                     raw: encodedMessage,
                 },
             });
-            cb(res.data)
+            cb({
+                ...res.data,
+                mailTo:mail.mail.to
+            })
         })
     }
 }

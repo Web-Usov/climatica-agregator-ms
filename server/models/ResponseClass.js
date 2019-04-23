@@ -8,7 +8,7 @@ class SendResponse {
             }
         }
         this.response = {
-            message: message || "Simple response",
+            message: message || "Response",
             data: data || null
         }
     }

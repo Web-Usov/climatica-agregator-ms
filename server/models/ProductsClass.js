@@ -10,6 +10,7 @@ class Products {
         this.store = props.store || ""
         this.fileName = props.fileName || ""
         this.createDate = props.createDate || new Date()
+        this.orderDate = props.orderDate || ""
         this.type = props.type || ""
 
     }
@@ -31,7 +32,7 @@ class Products {
             order.store = ws['C7'].v || ""
             order.fileName = fileName
             const date = new Date();
-            date.setHours(date.getHours() + 4)
+            date.setHours(date.getHours() + process.env.TIME_ZONE ||  4)
             order.createDate = date
             order.type = "Order"
 
@@ -50,8 +51,10 @@ class Products {
 
                 // await order.list.push(item)
                 order.items[item.article] = new Item(item)
+                if(order.orderDate === undefined ) order.orderDate = item.orderDate;
                 index++;
             }
+
         } catch (e) {
             console.log(e)
         }
@@ -71,13 +74,15 @@ class Products {
         const ws = wb.Sheets[wb.SheetNames[0]]
 
         let index = 19;
-
+        // console.log("PIP",ws['G' + index],order.items[ws['B' + index].v].orderDate);
+        
         try {
             while (ws['A' + index]) {
 
                 if (ws['B' + index]) {
                     const article = ws['B' + index].v
-                    ws['E' + index].v = order.items[article].count
+                    ws['E' + index].v = order.items[article].count                    
+                    ws['G' + index].v = order.items[article].orderDate
                 }
 
                 index++;
@@ -101,12 +106,15 @@ class Products {
         for (const key in correctOrder.items) {
             
             if (correctOrder.items.hasOwnProperty(key) && correctStock.items.hasOwnProperty(key)) {
+                correctOrder.items[key] = new Item({
+                    ...correctOrder.items[key],
+                    meta:correctStock.items[key].meta
+                })
                 if (correctStock.items[key].stock < correctOrder.items[key].count){
                     correctOrder.items[key] = new Item({
                         ...correctOrder.items[key],
                         count:correctStock.items[key].stock
                     })
-
                 }
             }
         }

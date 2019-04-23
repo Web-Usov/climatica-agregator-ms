@@ -6,6 +6,7 @@ module.exports = class Item {
         this.count = props.count || 0
         this.stock = props.stock || 0
         this.price = props.price || 0
-        this.orderDate = props.orderDate || ""
+        this.orderDate = props.orderDate || "",
+        this.meta = props.meta || ""
     }
 }
